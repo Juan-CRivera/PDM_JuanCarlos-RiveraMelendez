@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 
@@ -38,8 +39,8 @@ fun JCRMCUATRO(modifier: Modifier) {
         verticalArrangement = Arrangement.Top
 
     ) {
-        val lista = remember { mutableStateListOf<String>("") }
-        var nombre by remember { mutableStateOf("") }
+        val lista = remember { mutableStateListOf<String>() }
+        var nombre by remember { mutableStateOf(TextFieldValue()) }
 
         TextField(
             value = nombre,
@@ -48,7 +49,13 @@ fun JCRMCUATRO(modifier: Modifier) {
             placeholder = { Text("Nombre") }
         )
 
-        Button(onClick = { lista.add(nombre) }) {
+        Button(onClick = {
+            if (nombre.text.isNotEmpty()) {
+            lista.add(nombre.text)
+            nombre= TextFieldValue("")
+        }
+
+        }) {
             Text(text = "Guardar")
         }
 
@@ -63,32 +70,39 @@ fun JCRMCUATRO(modifier: Modifier) {
         }
         Column(
             modifier = Modifier
-                .height(200.dp)
-                .padding(10.dp)
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(16.dp)
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .background(Color.White)
+                    .fillMaxSize()
+                    .padding(16.dp)
                     .border(
-                        width = 8.dp,
+                        width = 4.dp,
                         color = Color.Blue,
                         shape = RoundedCornerShape(10.dp)
                     )
-            ) {
-                itemsIndexed(lista) { index, item -> Column(
+                    .padding(8.dp)
+            )
+            {
+                itemsIndexed(lista) { index, item ->
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                        ){
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    )
+                    {
                         Text(text = item)
-                        Text(text = (index + 1).toString())
-                }
+                        Text(text = "${index + 1}")
+                    }
+            }
             }
         }
     }
 }
-}
+
